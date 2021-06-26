@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
-import ThemeFrame from './ThemeFrame'
+import React, { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
+import ThemeFrame from './ThemeFrame'
 
 const Styled = {
   Item: styled.li`
@@ -25,20 +25,19 @@ const Styled = {
   `
 }
 
-const sign = ['A', 'B', 'C', 'D']
-
 const ButtonChoices = React.memo(props => {
-  const labels = Object.values(props.labels)
+  const sign = ['A', 'B', 'C', 'D']
+  const labels = useMemo(() => Object.values(props.labels), [props.labels])
   const events = useCallback(props.clicked, [props.clicked])
 
   return labels.map((label, i) => (
-    <Styled.Item key={`label-${i}`}>
+    <Styled.Item key={ `label-${i}` }>
       <ThemeFrame>
         <Styled.Button
           data-sign={ sign[i] }
           onClick={ () => events(sign[i]) }
         >
-          { `${sign[i]} : ${label}` }
+          { `${ sign[i] } : ${ label }` }
         </Styled.Button>
       </ThemeFrame>
     </Styled.Item>

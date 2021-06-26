@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import TheHeader from '../components/TheHeader'
 
 const Styled = {
   Main: styled.main`
@@ -12,7 +11,6 @@ const Styled = {
 const DefaultLayout = props => {
   return (
     <>
-      <TheHeader />
       <Styled.Main>
         { props.children }
       </Styled.Main>

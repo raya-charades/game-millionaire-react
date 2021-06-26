@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import ThemeFrame from './ThemeFrame'
 import styled from 'styled-components'
 
@@ -16,10 +17,11 @@ const Styled = {
 }
 
 const TextQuestion = React.memo(props => {
+  const currentQuestion = useSelector(state => state.game.currentQuestion)
   return (
     <ThemeFrame>
       <Styled.Text>
-        { props.label }
+        { `Q${ currentQuestion + 1 } : ${ props.label }` }
       </Styled.Text>
     </ThemeFrame>
   )

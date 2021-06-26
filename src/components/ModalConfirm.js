@@ -63,18 +63,18 @@ const isHidden = bool => classNames({
 
 const ModalTemplate = obj => (
   <Styled.Wrap>
-    <Styled.Text dangerouslySetInnerHTML={{ __html: obj.text  }}></Styled.Text>
+    <Styled.Text dangerouslySetInnerHTML={{ __html: obj.text  }} />
     <Styled.List>
       <Styled.Item>
         <ThemeFrame>
-          <Styled.Button onClick={ () => obj.props.apply(obj.props.scene) }>
+          <Styled.Button onClick={ obj.props.apply }>
             { obj.apply }
           </Styled.Button>
         </ThemeFrame>
       </Styled.Item>
       <Styled.Item className={ isHidden(obj.cancel) }>
         <ThemeFrame>
-          <Styled.Button onClick={ () => obj.props.cancel(obj.props.scene) }>
+          <Styled.Button onClick={ obj.props.cancel }>
             { obj.cancel }
           </Styled.Button>
         </ThemeFrame>
@@ -86,6 +86,7 @@ const ModalTemplate = obj => (
 const ModalConfirm = React.memo(props => {
   const currentQuestion = useSelector(state => state.game.currentQuestion)
   const moneyTree = useSelector(state => state.game.moneyTree)
+
   switch(props.scene) {
     case 'standby':
       return ModalTemplate({
@@ -125,7 +126,7 @@ const ModalConfirm = React.memo(props => {
     case 'millionaire':
       return ModalTemplate({
         props: props,
-        text: `おめでとうございます！<br>${moneyTree[currentQuestion].toLocaleString()}円獲得です！`,
+        text: `ミリオネア達成おめでとうございます！<br>${moneyTree[currentQuestion].toLocaleString()}円獲得です！`,
         apply: '最初へ戻る',
         cancel: ''
       })

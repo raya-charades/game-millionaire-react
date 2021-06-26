@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { nextQuestion, resetQuestion } from '../stores/game'
+import { setQuizData, nextQuestion, resetQuestion, setUserAnswer, setScene } from '../stores/game'
 import styled from 'styled-components'
-import classNames from 'classnames'
 import DefaultLayout from '../layouts/DefaultLayout'
+import TheHeader from '../components/TheHeader'
 import TopImage from '../components/TopImage'
 import TextQuestion from '../components/TextQuestion'
 import ButtonChoices from '../components/ButtonChoices'
 import ModalConfirm from '../components/ModalConfirm'
-import quiz from '../assets/stub/quiz'
 
 const Styled = {
   Title: styled.h2`
@@ -44,68 +43,69 @@ const Styled = {
 }
 
 const Home = () => {
-  const [quizData, setQuizData] = useState([])
-  const [userAnswer, setUserAnswer] = useState('')
-  const [modalScene, setModalScene] = useState('standby')
-
+  const quizData = useSelector(state => state.game.quizData)
   const currentQuestion = useSelector(state => state.game.currentQuestion)
+  const userAnswer = useSelector(state => state.game.userAnswer)
+  const currentScene = useSelector(state => state.game.currentScene)
   const dispatch = useDispatch()
 
   const confirmFinalAnswer = sign => {
-    setUserAnswer(state => state = sign)
-    setModalScene(modal => modal = 'finalanswer')
+    dispatch(setUserAnswer(sign))
+    dispatch(setScene('finalanswer'))
   }
 
   const clickedApply = () => {
-    if(modalScene === 'standby') {
-      setModalScene(modal => modal = '')
+    if(currentScene === 'standby') {
+      dispatch(setScene(''))
     }
     if(
-      modalScene === 'finalanswer'
+      currentScene === 'finalanswer'
       && quizData[currentQuestion].answer === userAnswer
     ) {
-      setModalScene(modal => modal = 'success')
+      dispatch(setScene('success'))
     }
     if(
-      modalScene === 'finalanswer'
+      currentScene === 'finalanswer'
       && quizData[currentQuestion].answer === userAnswer
       && currentQuestion === 14)
     {
-      setModalScene(modal => modal = 'millionaire')
+      dispatch(setScene('millionaire'))
     }
     if(
-      modalScene === 'finalanswer'
+      currentScene === 'finalanswer'
       && quizData[currentQuestion].answer !== userAnswer
     ) {
-      setModalScene(modal => modal = 'failed')
+      dispatch(setScene('failed'))
     }
-    if(modalScene === 'success') {
+    if(currentScene === 'success') {
       dispatch(nextQuestion())
-      setModalScene(modal => modal = '')
+      dispatch(setScene(''))
     }
-    if(modalScene === 'failed' || modalScene === 'dropout' || modalScene === 'millionaire') {
+    if(currentScene === 'failed' || currentScene === 'dropout' || currentScene === 'millionaire') {
       dispatch(resetQuestion())
-      setModalScene(modal => modal = 'standby')
+      dispatch(setScene('standby'))
     }
   }
 
   const clickedCancel = () => {
-    if(modalScene === 'finalanswer') {
-      setModalScene(modal => modal = '')
+    if(currentScene === 'finalanswer') {
+      dispatch(setScene(''))
     }
-    if(modalScene === 'success') {
-      setModalScene(modal => modal = 'dropout')
+    if(currentScene === 'success') {
+      dispatch(setScene('dropout'))
     }
   }
 
   useEffect(() => {
     fetch('https://api-charades-fzx9fn3j387f.netlify.app/.netlify/functions/quiz-millionaire')
       .then(res => res.json())
-      .then(res => setQuizData(quizData => quizData = res))
+      .then(res => dispatch(setQuizData(res)))
   }, [])
 
   const displayGame = () => (
     <DefaultLayout>
+      <TheHeader />
+
       <Styled.TopImage>
         <TopImage />
       </Styled.TopImage>
@@ -122,7 +122,7 @@ const Home = () => {
       </Styled.List>
 
       <ModalConfirm
-        scene={ modalScene }
+        scene={ currentScene }
         apply={ clickedApply }
         cancel={ clickedCancel }
       />

@@ -11,7 +11,7 @@ const Styled = {
 
 const TopImage = React.memo(() => {
   return (
-    <Styled.Image src="/assets/images/millionaire.jpg" alt="millionaire" />
+    <Styled.Image src="/assets/images/millionaire.jpg" alt="millionaire" height="" width="" />
   )
 })
 
